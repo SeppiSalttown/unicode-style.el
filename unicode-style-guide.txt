@@ -1,0 +1,239 @@
+================================================================================
+UNICODE-STYLE.EL (v0.42.2) — USER GUIDE & REFERENCE
+================================================================================
+
+1. INSTALLATION & SETUP
+--------------------------------------------------------------------------------
+Save `unicode-style.el` to your Emacs load path (e.g., `~/.emacs.d/lisp/`) and
+add the following to your `init.el`:
+
+  (add-to-list 'load-path "~/.emacs.d/lisp")
+  (require 'unicode-style)
+  (global-set-key (kbd "C-c u") 'unicode-style-prefix-map)
+  (global-unicode-style-visual-mode 1)
+
+Region commands operate on the active selection (highlight text first, then
+press `C-c u <key>`). Live minor-mode toggles (`C-c u ,`, `C-c u v`, `C-c u V`)
+work immediately without an active selection. Read-only buffers are protected.
+
+
+2. SUPPORTED LANGUAGES (26 TOTAL)
+--------------------------------------------------------------------------------
+`unicode-style.el` preserves native diacritics, ligatures, non-decomposing
+letters, and punctuation during styling and reversion (`C-c u a`), selects
+locale-specific quotation marks (`C-c u '` and `C-c u ,`), and transliterates
+everything to pure 7-bit ASCII in strict mode (`C-c u A`) for:
+
+- All 24 Official EU Languages:
+  Bulgarian, Croatian, Czech, Danish, Dutch, English, Estonian, Finnish,
+  French, German, Greek, Hungarian, Irish, Italian, Latvian, Lithuanian,
+  Maltese, Polish, Portuguese, Romanian, Slovak, Slovenian, Spanish, and
+  Swedish.
+- Additional Languages:
+  Ukrainian and Russian.
+
+
+3. ALPHABET & FONT STYLES
+--------------------------------------------------------------------------------
+Converts ASCII letters (`A-Z`, `a-z`) and digits (`0-9`) into Unicode
+Mathematical Alphanumeric characters while preserving native accents and
+non-Latin scripts.
+
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  -----------
+  C-c u b   unicode-style-toggle-bold       Hello 123    𝐇𝐞𝐥𝐥𝐨 𝟏𝟐𝟑  (toggles)
+  C-c u B   unicode-style-sans-bold         Hello 123    𝗛𝗲𝗹𝗹𝗼 𝟭𝟮𝟯
+  C-c u i   unicode-style-italic            Hello        𝐻𝑒𝑙𝑙𝑜
+  C-c u I   unicode-style-bold-italic       Hello        𝑯𝒆𝒍𝒍𝒐
+  C-c u j   unicode-style-sans-italic       Hello        𝘏𝘦𝘭𝘭𝘰
+  C-c u J   unicode-style-sans-bold-italic  Hello        𝙃𝙚𝙡𝙡𝙤
+  C-c u m   unicode-style-monospace         Hello 123    𝙷𝚎𝚕𝚕𝚘 𝟷𝟸𝟹
+  C-c u c   unicode-style-script            Hello        ℋℯ𝓁𝓁ℴ
+  C-c u C   unicode-style-bold-script       Hello        𝓗𝓮𝓵𝓵𝓸
+  C-c u d   unicode-style-double-struck     Hello 123    ℍ𝕖𝕝𝕝𝕠 𝟙𝟚𝟛
+  C-c u g   unicode-style-gothic            Straße       𝔖𝔱𝔯𝔞ß𝔢
+  C-c u G   unicode-style-bold-gothic       Straße       𝕾𝖙𝖗𝖆ß𝖊
+
+
+4. ENCLOSED STYLES (BUBBLE, SQUARE & KEYCAP)
+--------------------------------------------------------------------------------
+Converts letters and digits into circled, squared, or emoji keycap characters.
+Standalone two-digit numbers `10`..`20` convert automatically to `⑩`..`⑳` (in
+`bubble` / `square`) and `⓫`..`⓴` (`11`..`20` in `bubble-black` / `square-black`).
+Keycap mode (`C-c u k`) converts `0`..`9` to `0️⃣`..`9️⃣` and `10` to `🔟`.
+
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  ---------------
+  C-c u w   unicode-style-bubble            Abc 12 20    Ⓐⓑⓒ ⑫ ⑳
+  C-c u W   unicode-style-bubble-black      Abc 12 20    🅐🅑🅒 ⓬ ⓴
+  C-c u q   unicode-style-square            Abc 12 20    🄰🄱🄲 ⑫ ⑳
+  C-c u Q   unicode-style-square-black      Abc 12 20    🅰🅱🅲 ⓬ ⓴
+  C-c u k   unicode-style-keycap            0 5 10       0️⃣ 5️⃣ 🔟
+
+
+5. SUPERSCRIPT & SUBSCRIPT
+--------------------------------------------------------------------------------
+Maps letters, digits, `+`, `-`, `=`, `(`, and `)` into Unicode superscript or
+subscript positions.
+
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  -----------
+  C-c u ^   unicode-style-superscript       (x+2)^2      ⁽ˣ⁺²⁾²
+  C-c u _   unicode-style-subscript         H2O + x(i)   H₂O + ₓ₍ᵢ₎
+
+
+6. QUOTATION MARKS (REGION TOGGLE & ON-THE-FLY MODE)
+--------------------------------------------------------------------------------
+Converts straight ASCII `"` and `'` into locale-specific Unicode quotation
+marks, and toggles them back to straight ASCII quotes:
+
+  Key       Command                                  Action
+  --------  ---------------------------------------  ---------------------------
+  C-c u '   unicode-style-toggle-quotes              Toggle balanced `"` and `'`
+                                                     in region to locale Unicode
+                                                     quotes and back. Any odd
+                                                     unbalanced quote at the end
+                                                     is left untouched. Prefix
+                                                     `C-u` prompts for language.
+  C-c u ,   unicode-style-toggle-smart-quotes-mode   Toggle live minor mode that
+                                                     converts typed `"` and `'`
+                                                     into locale quotes on the
+                                                     fly.
+
+Selected Language Quote Styles (26 languages supported in `unicode-style-quote-styles`):
+  - German (`de`, default fallback):  „Double“   ‚Single‘
+  - English (`en`):                   “Double”   ‘Single’
+  - French (`fr`):                    « Double » ‹ Single › (with NBSP)
+  - Spanish / Italian / Greek:        «Double»   “Single”
+  - Polish / Croatian:                „Double”   ‚Single’
+  - Russian / Ukrainian:              «Double»   „Single“
+  - Danish (`da`):                    »Double«   ›Single‹
+  - Swedish / Finnish (`sv`, `fi`):   ”Double”   ’Single’
+  - Hungarian (`hu`):                 „Double”   »Single«
+  - Romanian (`ro`):                  „Double”   «Single»
+
+
+7. LINES, UNDERLINES & CONTINUOUS DISPLAY
+--------------------------------------------------------------------------------
+Applies combining line marks across letters, digits, punctuation, dashes, and
+spaces while keeping any existing font style (bold, italic, gothic, etc.).
+
+By default, `unicode-style-underline` uses `U+035F` (Combining Double Macron
+Below) so underlines bridge smoothly across adjacent characters in external
+apps (such as Signal), and automatically omits `U+035F` on the final character
+so the line stops flush without overhanging. Single-character selections
+automatically fall back to `U+0332`.
+
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  -----------
+  C-c u u   unicode-style-underline         Hello World  H͟e͟l͟l͟o͟ ͟W͟o͟r͟l͟d
+  C-c u U   unicode-style-double-underline  Hello        H̳e̳l̳l̳o̳
+  C-c u o   unicode-style-overline          Hello        H̅e̅l̅l̅o̅
+  C-c u s   unicode-style-strikethrough     Hello        H̶e̶l̶l̶o̶
+
+Continuous Display Controls in Emacs:
+  Key       Command                                  Action
+  --------  ---------------------------------------  ---------------------------
+  C-c u v   global-unicode-style-visual-mode         Toggle continuous line
+                                                     rendering across all
+                                                     buffers.
+  C-c u V   unicode-style-toggle-visual-size-limit   Toggle optional buffer-size
+                                                     limit (default: unlimited;
+                                                     toggles 500 KB cap).
+  C-c u =   unicode-style-compose-underlines         Manually compose region.
+  C-c u +   unicode-style-decompose-underlines       Show raw combining glyphs.
+
+
+8. DIACRITICS & VECTOR ARROWS
+--------------------------------------------------------------------------------
+Applies combining accents and arrows above letters (skipping spaces/digits).
+
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  -----------
+  C-c u "   unicode-style-umlaut            aou          äöü
+  C-c u >   unicode-style-right-arrow       AB / v       A⃗B⃗ / v⃗
+  C-c u <   unicode-style-left-arrow        AB / v       A⃖B⃖ / v⃖
+  C-c u ~   unicode-style-left-right-arrow  AB / v       A⃡B⃡ / v⃡
+
+Additional diacritics available via `C-c u RET` (`unicode-style-region`):
+  `acute` (á), `grave` (à), `circumflex` (â), `tilde` (ã),
+  `macron` (ā), `breve` (ă), `dot-above` (ż), `ring` (å),
+  `double-acute` (ő), `caron` (č), `comma-below` (ș), `cedilla` (ç),
+  `ogonek` (ą)
+
+
+9. PUNCTUATION & PARENTHESES / BRACKETS
+--------------------------------------------------------------------------------
+  Key       Command                         Input        Output
+  --------  ------------------------------  -----------  -----------
+  C-c u p   unicode-style-fullwidth-punct   Hello, !?    Hello， ！？
+  C-c u P   unicode-style-fancy-punct       Wait... !?   Wait… ‽
+  C-c u (   unicode-style-brackets          (Note)   【Note】 〖1〗
+
+`C-c u P` conversions:
+  `...` -> `…`   |   `!?` / `?!` -> `‽`   |   `!!` -> `‼`   |   `??` -> `⁇`   |   `--` -> `—`
+
+`C-c u (` bracket styles (selected via completion prompt):
+  - fullwidth:   （ ） ［ ］ ｛ ｝
+  - lenticular:  【 】 〖 〗
+  - tortoise:    〔 〕 〘 〙
+  - angle:       〈 〉 《 》
+  - corner:      「 」 『 』
+  - superscript: ⁽ ⁾
+  - subscript:   ₍ ₎
+  - ascii:       ( ) [ ] { }
+
+
+10. COMBINING STYLES & REVERTING TO PLAIN TEXT
+--------------------------------------------------------------------------------
+  Key          Command                        Action
+  -----------  -----------------------------  ----------------------------------
+  C-c u RET    unicode-style-region           Prompt with completion for any
+  (or SPC)                                    single or combined preset, e.g.:
+                                              - `bold-underline`     (𝐛͟𝐨͟𝐥͟𝐝)
+                                              - `italic-right-arrow` (𝑣⃗)
+                                              - `gothic-overline`    (𝔤̅𝔬̅𝔱̅𝔥̅𝔦̅𝔠̅)
+                                              - `quotes`             („…“)
+
+  C-c u a      unicode-style-to-ascii         Revert styled text to plain text
+                                              while preserving native spelling
+                                              across all 26 supported languages.
+
+  C-c u A      unicode-style-to-strict-ascii  Transliterate all Latin, Greek,
+                                              and Cyrillic letters, quotes, and
+                                              punctuation to pure 7-bit ASCII.
+
+  C-c u r      unicode-style-toggle-cyrillic-transliteration
+                                              Switch Cyrillic strict-ASCII mode
+                                              between Ukrainian (`uk', default:
+                                              И->Y, Г->H) and Bulgarian/Russian
+                                              (`ru-bg': И->I, Г->G).
+
+
+11. CUSTOMIZATION VARIABLES
+--------------------------------------------------------------------------------
+Add any of these to your `init.el` to adjust default behavior:
+
+  ;; Underline character: #x035F (Double Macron Below, default), #x0332, #x0331, #x0333
+  (setq unicode-style-underline-char #x035F)
+
+  ;; Trim U+035F on the last character so the underline stops flush (default: t)
+  (setq unicode-style-trim-trailing-double-underline t)
+
+  ;; Underline spaces between words (default: t)
+  (setq unicode-style-underline-spaces t)
+
+  ;; Render continuous lines via overlays inside Emacs (default: t)
+  (setq unicode-style-continuous-display t)
+
+  ;; Optional max buffer size in bytes for visual mode (nil = unlimited, default)
+  (setq unicode-style-visual-max-buffer-size nil)
+  (setq unicode-style-visual-size-limit-bytes 500000)
+
+  ;; Smart quotation mark language ('auto or ISO code e.g. "de", "en", "fr")
+  (setq unicode-style-quote-language 'auto)
+  (setq unicode-style-default-quote-language "de")
+
+  ;; Cyrillic strict-ASCII scheme: 'uk (Ukrainian, default) or 'ru-bg (Bulgarian/Russian)
+  (setq unicode-style-cyrillic-transliteration 'uk)
+================================================================================
