@@ -1,4 +1,4 @@
-;;; test_unicode_style.el --- Automated batch tests for unicode-style.el v0.42.2 -*- lexical-binding: t; -*-
+;;; test_unicode_style.el --- Automated batch tests for unicode-style.el v0.42.4 -*- lexical-binding: t; -*-
 
 (require 'ert)
 (load (expand-file-name "unicode-style.el" default-directory) nil t)

@@ -1,10 +1,10 @@
-# unicode-style.el (v0.42.2)
+# unicode-style.el (v0.42.4)
 
 [![Version](https://shields.io)](https://github.com)
 [![MELPA](https://melpa.org)](https://melpa.org)
 [![License: GPL v3](https://shields.io)](https://gnu.org)
 
-> **Documentation Version:** `0.42.2`
+> **Documentation Version:** `0.42.4`
 
 Transform selected text regions in Emacs into Unicode Mathematical Alphanumeric styles, enclosed characters (bubble, square, keycap), superscripts/subscripts, combining underlines/overlines/strikethroughs, diacritics, vector arrows, language-specific quotation marks, and typographic/fullwidth punctuation—ready to copy-paste anywhere plain text is supported (such as Signal, Slack, Discord, or social media).
 

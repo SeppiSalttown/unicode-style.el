@@ -1,10 +1,10 @@
-;;; unicode-style.el --- Transform regions using Unicode styles, scripts, and diacritics -*- lexical-binding: t; -*-
+;;; unicode-style.el --- Transform regions using Unicode styles and diacritics -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2026 Josef Teske
 
 ;; Author: Josef Teske <Josef.Teske@directbox.com>
 ;; Maintainer: Josef Teske <Josef.Teske@directbox.com>
-;; Version: 0.42.2
+;; Version: 0.42.4
 ;; Package-Requires: ((emacs "27.1"))
 ;; Keywords: convenience, editing, unicode, text
 ;; URL: https://github.com
@@ -255,7 +255,7 @@ Toggle interactively via `unicode-style-toggle-cyrillic-transliteration'."
 	 (bold-gothic      . "𝕬𝕭𝕮𝕯𝕰𝕱𝕲𝕳𝕴𝕵𝕶𝕷𝕸𝕹𝕺𝕻𝕼𝕽𝕾𝕿𝖀𝖁𝖂𝖃𝖄𝖅𝖆𝖇𝖈𝖉𝖊𝖋𝖌𝖍𝖎𝖏𝖐𝖑𝖒𝖓𝖔𝖕𝖖𝖗𝖘𝖙𝖚𝖛𝖜𝖝𝖞𝖟0123456789")
 	 (bubble           . "ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ⓪①②③④⑤⑥⑦⑧⑨")
 	 (bubble-black     . "🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩🅐🅑🅒🅓🅔🅕🅖🅗🅘🅙🅚🅛🅜🅝🅞🅟🅠🅡🅢🅣🅤🅥🅦🅧🅨🅩⓿❶❷❸❹❺❻❼❽❾")
-	 (square           . "🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉⓪①②③④⑤⑥⑦⑧⑨")
+	 (squared          . "🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉⓪①②③④⑤⑥⑦⑧⑨")
 	 (square-black     . "🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉⓿❶❷❸❹❺❻❼❽❾"))
   "Alist mapping Unicode base styles to 62-character lookup strings.")
 
@@ -333,7 +333,7 @@ Toggle interactively via `unicode-style-toggle-cyrillic-transliteration'."
   "Multi-character ASCII punctuation replacements for `unicode-style-fancy-punct'.")
 
 (defun unicode-style--combining-marks ()
-  "Return alist of combining diacritical marks."
+  "Return alist of combining diacritics."
   `((underline         . ,unicode-style-underline-char)
 	 (double-underline  . #x0333)
 	 (macron-below      . #x0331)
@@ -546,7 +546,7 @@ Toggle interactively via `unicode-style-toggle-cyrillic-transliteration'."
 		 (t nil)))))
 
 (defun unicode-style--resolve-quote-language (&optional override-lang)
-  "Determine active ISO 639-1 language code for smart quotes."
+  "Determine active ISO 639-1 language code, preferring OVERRIDE-LANG."
   (or (unicode-style--normalize-lang-code override-lang)
 		(when (stringp unicode-style-quote-language)
 		  (unicode-style--normalize-lang-code unicode-style-quote-language))
@@ -557,7 +557,7 @@ Toggle interactively via `unicode-style-toggle-cyrillic-transliteration'."
 		"de"))
 
 (defun unicode-style--quotes-to-ascii (text)
-  "Revert typographic quotation marks in TEXT back to straight ASCII quotes."
+  "Revert typographic quotes in TEXT back to straight ASCII quotes."
   (let ((res text))
 	 (dolist (rule '(("«\u00A0" . "\x22")
 						  ("\u00A0»" . "\x22")
@@ -626,7 +626,7 @@ Unbalanced trailing quotes are left untouched."
 
 ;;;###autoload
 (defun unicode-style-toggle-quotes (start end &optional lang)
-  "Toggle quotation marks between START and END between ASCII and Unicode quotes.
+  "Toggle quotes between START and END between ASCII and Unicode quotes.
 With a prefix argument (or optional LANG), prompt for the target language."
   (interactive
 	(list (region-beginning)
@@ -697,7 +697,7 @@ With a prefix argument (or optional LANG), prompt for the target language."
 
 ;;;###autoload
 (defun unicode-style-toggle-smart-quotes-mode ()
-  "Toggle `unicode-style-smart-quotes-mode' for on-the-fly locale quotation marks."
+  "Toggle `unicode-style-smart-quotes-mode' for live locale quotes."
   (interactive)
   (unicode-style-smart-quotes-mode (if unicode-style-smart-quotes-mode -1 1))
   (if unicode-style-smart-quotes-mode
@@ -709,7 +709,7 @@ With a prefix argument (or optional LANG), prompt for the target language."
 
 (defun unicode-style--presets ()
   "Build list of available single and combined Unicode style names."
-  (let ((bases (append (delq 'ascii (mapcar #'car unicode-style-maps))
+  (let ((bases (append (mapcar (lambda (s) (if (eq s 'squared) 'square s)) (delq 'ascii (mapcar #'car unicode-style-maps)))
 							  '(keycap superscript subscript)))
 		  (decs  (mapcar #'car (unicode-style--combining-marks)))
 		  presets)
@@ -760,7 +760,7 @@ With a prefix argument (or optional LANG), prompt for the target language."
       (or found char)))))
 
 (defun unicode-style--normalize-enclosed-numbers (text)
-  "Expand keycap digits and circled numbers (10..20) in TEXT to ASCII digits."
+  "Expand keycap digits and circled glyphs (10..20) in TEXT to ASCII."
   (let ((res (replace-regexp-in-string "\\([0-9]\\)\uFE0F?\u20E3" "\\1" text t)))
 	 (dolist (pair unicode-style-multi-digit-numbers res)
       (setq res (replace-regexp-in-string (regexp-quote (string (car pair)))
@@ -853,7 +853,7 @@ When KEEP-TYPOGRAPHY is non-nil, orthographic accents, special letters,
 and punctuation across EU, Ukrainian, and Russian are preserved.
 PUNCT-MODE can be `fullwidth' or `fancy'."
   (barf-if-buffer-read-only)
-  (let* ((style        (or base-style 'ascii))
+  (let* ((style        (if (eq base-style 'square) 'squared (or base-style 'ascii)))
          (all-marks    (unicode-style--combining-marks))
          (target-str   (alist-get style unicode-style-maps))
          (script-map   (alist-get style unicode-style-script-positions))
@@ -998,7 +998,7 @@ PUNCT-MODE can be `fullwidth' or `fancy'."
   (interactive
 	(list (intern (completing-read
 						"Base style: "
-						(append (mapcar (lambda (x) (symbol-name (car x))) unicode-style-maps)
+						(append (mapcar (lambda (x) (symbol-name (if (eq (car x) 'squared) 'square (car x)))) unicode-style-maps)
 								  '("keycap" "superscript" "subscript"))
 						nil t))
 			(region-beginning)
@@ -1204,7 +1204,8 @@ PUNCT-MODE can be `fullwidth' or `fancy'."
 	 map)
   "Prefix keymap for Unicode text styling commands.")
 (fset 'unicode-style-prefix-map unicode-style-prefix-map)
-(with-eval-after-load 'which-key
+(declare-function which-key-add-key-based-replacements "which-key" (key-sequence replacement &rest more))
+(when (fboundp 'which-key-add-key-based-replacements)
   (which-key-add-key-based-replacements "C-c u" "unicode-style"))
 (provide 'unicode-style)
 
